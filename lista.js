@@ -68,7 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
       Parentesco: parentesco,
       "Cédula del Tutor": cedulaTutor,
       "Cédula entregada": entregaCedula,
-      Motivo: entregaCedula === "No" ? motivo : "N/A"
+      Motivo: entregaCedula === "No" ? motivo : "N/A",
+      Fecha: new Date().toLocaleString("es-BO", { timeZone: "America/La_Paz" })
     };
 
     try {
@@ -125,7 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ["Parentesco", lastData.Parentesco || ""],
         ["Cédula del Tutor", lastData["Cédula del Tutor"] || ""],
         ["Cédula entregada", lastData["Cédula entregada"] || ""],
-        ["Motivo", lastData.Motivo || ""]
+        ["Motivo", lastData.Motivo || ""],
+        ["Fecha y Hora", lastData.Fecha || ""]
       ];
 
       doc.autoTable({
