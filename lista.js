@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Elementos UI
   const form = document.getElementById("formRegistro");
   const sendButton = document.getElementById("sendList");
   const loading = document.getElementById("loading");
@@ -7,81 +8,93 @@ document.addEventListener("DOMContentLoaded", () => {
   const cerrarModal = document.getElementById("cerrar-modal");
   const descargarPDF = document.getElementById("descargarPDF");
 
+  // Campos del formulario (según tu HTML)
   const estudianteSelect = document.getElementById("estudiante");
   const nombreTutorInput = document.getElementById("nombreTutor");
-  const cedulaTutorInput = document.getElementById("cedulaTutor");
-  const entregaCedulaSelect = document.getElementById("entregaCedula");
+  const parentescoSelect = document.getElementById("parentesco");
+  const cedulaTutorInput = document.getElementById("cedulaTutor"); // input text
+  const entregaCedulaSelect = document.getElementById("entregaCedula"); // select Sí/No
   const motivoContainer = document.getElementById("motivoContainer");
   const motivoInput = document.getElementById("motivo");
 
+  // URL para enviar (reemplaza por tu Web App si corresponde)
   const urlSheetBest = "https://api.sheetbest.com/sheets/48d2338d-5018-406b-b2fd-2e7ce6761d55";
   let lastData = null;
 
-  // Mostrar/ocultar motivo si se selecciona "No"
-  entregaCedulaSelect.addEventListener("change", () => {
-    if (entregaCedulaSelect.value === "No") {
-      motivoContainer.style.display = "block";
-      motivoInput.required = true;
-    } else {
-      motivoContainer.style.display = "none";
-      motivoInput.required = false;
-      motivoInput.value = "";
-    }
-  });
+  // Mostrar/ocultar motivo cuando seleccionen "No"
+  if (entregaCedulaSelect && motivoContainer && motivoInput) {
+    entregaCedulaSelect.addEventListener("change", () => {
+      if (entregaCedulaSelect.value === "No") {
+        motivoContainer.style.display = "block";
+        motivoInput.required = true;
+        motivoInput.focus();
+      } else {
+        motivoContainer.style.display = "none";
+        motivoInput.required = false;
+        motivoInput.value = "";
+      }
+    });
+  }
 
-  // Evento submit
+  // Submit
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const estudiante = estudianteSelect.value.trim();
-    const nombreTutor = nombreTutorInput.value.trim();
-    const cedulaTutor = cedulaTutorInput.value.trim();
-    const entregaCedula = entregaCedulaSelect.value;
-    const motivo = motivoInput.value.trim();
+    // Leer valores
+    const estudiante = estudianteSelect ? estudianteSelect.value.trim() : "";
+    const nombreTutor = nombreTutorInput ? nombreTutorInput.value.trim() : "";
+    const parentesco = parentescoSelect ? parentescoSelect.value.trim() : "";
+    const cedulaTutor = cedulaTutorInput ? cedulaTutorInput.value.trim() : "";
+    const entregaCedula = entregaCedulaSelect ? entregaCedulaSelect.value : "";
+    const motivo = motivoInput ? motivoInput.value.trim() : "";
 
     // Validaciones
     if (!estudiante) { alert("⚠️ Seleccione un estudiante."); return; }
-    if (!nombreTutor) { alert("⚠️ Ingrese el nombre completo del padre, madre o tutor."); return; }
-    if (!cedulaTutor) { alert("⚠️ Ingrese el número de cédula del padre, madre o tutor."); return; }
-    if (!entregaCedula) { alert("⚠️ Indique si entregó la fotocopia de su Cédula de Identidad."); return; }
-    if (entregaCedula === "No" && !motivo) { alert("⚠️ Por favor indique el motivo."); return; }
+    if (!nombreTutor) { alert("⚠️ Ingrese el nombre completo del padre, madre o tutor."); nombreTutorInput.focus(); return; }
+    if (!parentesco) { alert("⚠️ Seleccione el parentesco."); parentescoSelect.focus(); return; }
+    if (!cedulaTutor) { alert("⚠️ Ingrese el número de cédula del padre/madre/tutor."); cedulaTutorInput.focus(); return; }
+    if (!entregaCedula) { alert("⚠️ Indique si entregó la fotocopia de la Cédula de Identidad."); entregaCedulaSelect.focus(); return; }
+    if (entregaCedula === "No" && !motivo) { alert("⚠️ Por favor indique el motivo."); motivoInput.focus(); return; }
 
-    // Mostrar spinner y deshabilitar botón
+    // Mostrar spinner y bloquear botón
     loading.style.display = "flex";
     sendButton.disabled = true;
     sendButton.style.opacity = "0.6";
 
-    // Preparar datos para Google Sheets
+    // Preparar objeto a enviar
     lastData = {
       Estudiante: estudiante,
       "Padre/Madre/Tutor": nombreTutor,
+      Parentesco: parentesco,
       "Cédula del Tutor": cedulaTutor,
       "Cédula entregada": entregaCedula,
-      Motivo: entregaCedula === "No" ? motivo : "N/A",
-      Fecha: new Date().toLocaleString("es-BO", { timeZone: "America/La_Paz" })
+      Motivo: entregaCedula === "No" ? motivo : "N/A"
     };
 
     try {
-      if (urlSheetBest !== "") {
+      // Si tienes una URL válida, envía
+      if (urlSheetBest && urlSheetBest.trim() !== "") {
         const res = await fetch(urlSheetBest, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(lastData)
         });
-        if (!res.ok) throw new Error("Error al enviar datos a Google Sheets.");
+        if (!res.ok) throw new Error(`Respuesta no OK (${res.status})`);
       }
 
-      // Mostrar modal de éxito
+      // Mostrar modal de éxito y habilitar descarga
       modalMensaje.textContent = "✅ ¡Formulario enviado correctamente!";
       modal.style.display = "flex";
       descargarPDF.style.display = "inline-block";
 
-      // Reset formulario
+      // Limpiar formulario
       form.reset();
       motivoContainer.style.display = "none";
+      motivoInput.required = false;
 
-    } catch (error) {
-      modalMensaje.textContent = "❌ " + error.message;
+    } catch (err) {
+      console.error(err);
+      modalMensaje.textContent = "❌ Error: " + (err.message || err);
       modal.style.display = "flex";
       descargarPDF.style.display = "none";
     } finally {
@@ -91,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Descargar PDF
+  // Descargar PDF con datos en orden legible
   descargarPDF.addEventListener("click", () => {
     if (!lastData) return;
 
@@ -105,8 +118,16 @@ document.addEventListener("DOMContentLoaded", () => {
       doc.setFontSize(11);
       doc.text("Unidad Educativa Jupapina - Segundo de Secundaria", 20, 28);
 
-      // Tabla de datos
-      const tableBody = Object.entries(lastData).map(([key, value]) => [key, value]);
+      // Construir filas en el orden deseado
+      const tableBody = [
+        ["Estudiante", lastData.Estudiante || ""],
+        ["Padre/Madre/Tutor", lastData["Padre/Madre/Tutor"] || ""],
+        ["Parentesco", lastData.Parentesco || ""],
+        ["Cédula del Tutor", lastData["Cédula del Tutor"] || ""],
+        ["Cédula entregada", lastData["Cédula entregada"] || ""],
+        ["Motivo", lastData.Motivo || ""]
+      ];
+
       doc.autoTable({
         startY: 40,
         head: [["Campo", "Valor"]],
@@ -116,14 +137,18 @@ document.addEventListener("DOMContentLoaded", () => {
         columnStyles: { 1: { cellWidth: "auto" } }
       });
 
-      doc.save(`Registro_${lastData.Estudiante}.pdf`);
+      const fileName = `Registro_${(lastData.Estudiante || "sin_nombre").replace(/\s+/g, "_")}.pdf`;
+      doc.save(fileName);
     } catch (err) {
-      alert("Error al generar PDF: " + err.message);
+      console.error(err);
+      alert("Error al generar PDF: " + (err.message || err));
     }
   });
 
   // Cerrar modal
-  cerrarModal.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
+  if (cerrarModal) {
+    cerrarModal.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+  }
 });
