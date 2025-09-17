@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Registro - Bono Juancito Pinto</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+  <header class="encabezado">
+    <h1>Formulario de Registro y Actualización</h1>
+    <h2>Bono Juancito Pinto</h2>
+    <h3>Curso: Segundo de Secundaria</h3>
+    <p class="asesores">Asesores: Prof. Raúl Mamani M. – Prof. Humberto Yupanqui C.</p>
+  </header>
+  
+  <main>
+    <form id="formRegistro">
+
+      <!-- Selección de estudiante -->
+      <label for="estudiante"><strong>Seleccione el estudiante:</strong></label>
+      <select name="estudiante" id="estudiante" required>
+        <option value="">-- Seleccione un estudiante --</option>
+        <option>BLANCO CAPIONA MATEO IVAR</option>
+        <option>CALATAYUD YUJRA BRENDA MAYTE</option>
+        <option>CHINO COYO GENESIS CECILIA</option>
+        <option>CORINA QUISPE JUAN FERNANDO</option>
+        <option>CUTIPA ESPEJO CRISTIAN ELVIS</option>
+        <option>ESCALANTE VACA MARIA DEL CIELO</option>
+        <option>ESPEJO ALANOCA KEYLA ALEIDIS</option>
+        <option>FLORES HUMEREZ JASIEL NOEMI</option>
+        <option>FLORES VARGAS MIGUEL ANGEL</option>
+        <option>GARCIA GARCIA GABRIEL KEVIN</option>
+        <option>GONZALES ROSAS RICARDO</option>
+        <option>GUARACHI LIMACHI FABRICIO DANIEL</option>
+        <option>GUARACHI MARTINEZ ZOEY SUMAYA</option>
+        <option>LUNA MERLO KEVIN PATRICIO</option>
+        <option>MAMANI HUANCA JHENNY YOSELIN</option>
+        <option>MAYTA MAMANI JUAN RODRIGO</option>
+        <option>POMA QUISPE JULIAN NEYMAR</option>
+        <option>PUSARI SARICORDIA ANA CELESTE</option>
+        <option>QUISPE ALVAREZ PAOLA REYNA</option>
+        <option>QUISPE GONZALES HANNA JANDY</option>
+        <option>QUISPE MAMANI NEYMAR DIDYEL</option>
+        <option>QUISPE PAUCARA DRAKE NOLAND</option>
+        <option>QUISPE QUISPE LEIDY FLORA</option>
+        <option>RAMIREZ VARGAS KEVIN</option>
+        <option>ROJAS MALLCU YUSARA GENESIS</option>
+        <option>TAPIA SEJAS AARON JUSTINIANO</option>
+        <option>TICONA LIMA ANGELA MASHIEL</option>
+        <option>YUJRA SIRPA DELIA</option>
+        <option>ZACARI PAUCARA LESLIE MAYLI</option>
+        <option>ZAMBRANA OMONTE JOSE ANTONIO</option>
+      </select>
+
+      <!-- Datos del padre/madre/tutor -->
+      <div class="campos">
+        <h4>Datos del padre, madre o tutor que cobrará el Bono</h4>
+
+        <label for="nombreTutor">Nombre completo:</label>
+        <input type="text" id="nombreTutor" name="nombreTutor" required placeholder="Ej: Juan Pérez Mamani">
+
+        <label for="cedulaTutor">Nro de cédula de identidad del padre/madre o tutor:</label>
+        <input type="text" id="cedulaTutor" name="cedulaTutor" required placeholder="Ej: 12345678">
+
+        <label for="entregaCedula">¿Entregó la fotocopia de Cédula de Identidad del padre/madre o tutor?</label>
+        <select id="entregaCedula" name="entregaCedula" required>
+          <option value="">-- Seleccione una opción --</option>
+          <option value="Sí">Sí</option>
+          <option value="No">No</option>
+        </select>
+
+        <!-- Contenedor para el motivo -->
+        <div id="motivoContainer" style="display:none; margin-top:10px;">
+          <label for="motivo">Por favor indique el motivo:</label>
+          <input type="text" id="motivo" name="motivo" placeholder="Escriba el motivo aquí">
+        </div>
+      </div>
+
+      <!-- Botón y spinner -->
+      <div class="send-container">
+        <button type="submit" id="sendList">Guardar y Enviar</button>
+        <div id="loading" class="loading" style="display:none;">
+            <span class="spinner"></span>
+            <span class="loading-text">⏳ Procesando...</span>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div id="modal" class="modal">
+        <div class="modal-contenido">
+          <p id="modal-mensaje"></p>
+          <button id="cerrar-modal">Cerrar</button>
+          <button id="descargarPDF" style="display:none;">Descargar PDF</button>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- Librerías JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <script src="lista.js"></script>
+</body>
+</html>

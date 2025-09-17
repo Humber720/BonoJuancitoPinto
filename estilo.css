@@ -1,0 +1,190 @@
+/* Reset y tipografía */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #e9f1f7, #fdfdfd);
+  padding: 20px;
+  color: #2c3e50;
+  line-height: 1.5;
+}
+
+/* Encabezado */
+.encabezado {
+  text-align: center;
+  margin-bottom: 30px;
+  animation: fadeIn 0.8s ease-in-out;
+}
+.encabezado h1 {
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-size: 1.6rem;
+}
+.encabezado h2 {
+  color: #34495e;
+  margin-bottom: 5px;
+  font-weight: normal;
+  font-size: 1.2rem;
+}
+.asesores {
+  font-size: 0.9em;
+  color: #7f8c8d;
+}
+
+/* Formulario */
+form {
+  max-width: 600px;
+  margin: auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.6s ease-out;
+}
+
+form h4 {
+  margin: 15px 0 10px;
+  color: #2980b9;
+  font-size: 1.1rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+form select,
+form input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+form select:focus,
+form input[type="text"]:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 6px rgba(52, 152, 219, 0.4);
+  outline: none;
+}
+
+/* Botones */
+button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+/* Contenedor del envío */
+.send-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* Animación de carga */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in;
+}
+.modal-contenido {
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 14px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.modal-contenido button {
+  margin: 10px 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+#cerrar-modal {
+  background: #888;
+  color: #fff;
+}
+#descargarPDF {
+  background: #2980b9;
+  color: #fff;
+}
+
+/* Responsividad */
+@media (max-width: 640px) {
+  body {
+    padding: 10px;
+  }
+  form {
+    padding: 20px;
+  }
+  button {
+    width: 100%;
+  }
+  .send-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+/* Animaciones generales */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(25px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
