@@ -20,163 +20,253 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const estudianteSelect =
     document.getElementById("estudiante");
+
   const nombreTutorInput =
     document.getElementById("nombreTutor");
+
   const parentescoSelect =
     document.getElementById("parentesco");
+
   const cedulaTutorInput =
     document.getElementById("cedulaTutor");
 
-  // ------------------------------------------------------------
+
+  // ============================================================
   // MODALIDAD DE COBRO
-  // ------------------------------------------------------------
-  const modalidadCobroSelect =
+  // ============================================================
+
+  const modalidadCobro =
     document.getElementById("modalidadCobro");
+
   const cuentaContainer =
     document.getElementById("cuentaContainer");
-  const numeroCuentaInput =
+
+  const numeroCuenta =
     document.getElementById("numeroCuenta");
 
-  // ------------------------------------------------------------
+  const celularContainer =
+    document.getElementById("celularContainer");
+
+  const numeroCelular =
+    document.getElementById("numeroCelular");
+
+
+  // ============================================================
   // ENTREGA DE CÉDULA
-  // ------------------------------------------------------------
+  // ============================================================
+
   const entregaCedulaSelect =
     document.getElementById("entregaCedula");
+
   const motivoContainer =
     document.getElementById("motivoContainer");
+
   const motivoInput =
     document.getElementById("motivo");
+
 
   // ============================================================
   // URL DE GOOGLE APPS SCRIPT
   // ============================================================
-  //
-  // AQUÍ DEBES COLOCAR LA URL DE TU WEB APP DE APPS SCRIPT.
-  //
-  // Ejemplo:
-  // https://script.google.com/macros/s/XXXXXXXXXXXX/exec
-  //
-  // ============================================================
+
 const URL_APPS_SCRIPT =
-  "https://script.google.com/macros/s/AKfycbypjNLhmuExKkYnO9zbXp14IQM1FNPvuFHzO_N1pFo9N3zuqeZLlMykaXpHaK4rqQJ_mw/exec";
+  "https://script.google.com/macros/s/AKfycbwOknPj0zHhF6Bx0pviaXQQuoDuvckndtlP_CjJU1aabPXQ_2bVAdRGGG9STi3B2ieqww/exec";
+
 
   // ============================================================
   // VARIABLE PARA EL PDF
   // ============================================================
 
   let lastData = null;
+
+
   // ============================================================
-  // MOSTRAR / OCULTAR NÚMERO DE CUENTA
+  // MOSTRAR / OCULTAR CUENTA O CELULAR
   // ============================================================
+
   if (
-    modalidadCobroSelect &&
+    modalidadCobro &&
     cuentaContainer &&
-    numeroCuentaInput
+    numeroCuenta &&
+    celularContainer &&
+    numeroCelular
   ) {
-    modalidadCobroSelect.addEventListener("change", () => {
 
-      if (modalidadCobroSelect.value === "ABONO EN CUENTA") {
-        // Mostrar caja de número de cuenta
+    modalidadCobro.addEventListener("change", function () {
+
+      // ----------------------------------------------------------
+      // OCULTAR AMBOS CAMPOS
+      // ----------------------------------------------------------
+
+      cuentaContainer.style.display = "none";
+      celularContainer.style.display = "none";
+
+
+      // ----------------------------------------------------------
+      // QUITAR OBLIGATORIEDAD
+      // ----------------------------------------------------------
+
+      numeroCuenta.required = false;
+      numeroCelular.required = false;
+
+
+      // ----------------------------------------------------------
+      // LIMPIAR CAMPOS
+      // ----------------------------------------------------------
+
+      numeroCuenta.value = "";
+      numeroCelular.value = "";
+
+
+      // ----------------------------------------------------------
+      // ABONO EN CUENTA
+      // ----------------------------------------------------------
+
+      if (this.value === "ABONO EN CUENTA") {
+
         cuentaContainer.style.display = "block";
-        // Hacer obligatorio
-        numeroCuentaInput.required = true;
-        // Colocar cursor
-        numeroCuentaInput.focus();
-      } else {
 
-        // Ocultar caja
-        cuentaContainer.style.display = "none";
-        // Quitar obligatorio
-        numeroCuentaInput.required = false;
-        // Limpiar
-        numeroCuentaInput.value = "";
+        numeroCuenta.required = true;
+
+        setTimeout(() => {
+          numeroCuenta.focus();
+        }, 100);
+      }
+
+
+      // ----------------------------------------------------------
+      // BILLETERA MÓVIL YASTA
+      // ----------------------------------------------------------
+
+      if (this.value === "BILLETERA MÓVIL YASTA") {
+
+        celularContainer.style.display = "block";
+
+        numeroCelular.required = true;
+
+        setTimeout(() => {
+          numeroCelular.focus();
+        }, 100);
       }
 
     });
-
   }
 
+
   // ============================================================
-  // MOSTRAR / OCULTAR MOTIVO DE NO ENTREGA DE CÉDULA
+  // MOSTRAR / OCULTAR MOTIVO
   // ============================================================
+
   if (
     entregaCedulaSelect &&
     motivoContainer &&
     motivoInput
   ) {
+
     entregaCedulaSelect.addEventListener("change", () => {
+
       if (entregaCedulaSelect.value === "No") {
-        // Mostrar motivo
+
         motivoContainer.style.display = "block";
-        // Hacer obligatorio
+
         motivoInput.required = true;
-        // Colocar cursor
-        motivoInput.focus();
+
+        setTimeout(() => {
+          motivoInput.focus();
+        }, 100);
+
       } else {
-        // Ocultar
+
         motivoContainer.style.display = "none";
-        // Quitar obligatorio
+
         motivoInput.required = false;
-        // Limpiar
+
         motivoInput.value = "";
       }
+
     });
   }
+
 
   // ============================================================
   // ENVÍO DEL FORMULARIO
   // ============================================================
+
   if (form) {
+
     form.addEventListener("submit", async (e) => {
+
       e.preventDefault();
+
 
       // ========================================================
       // LEER DATOS
       // ========================================================
+
       const estudiante =
         estudianteSelect
           ? estudianteSelect.value.trim()
           : "";
+
       const nombreTutor =
         nombreTutorInput
           ? nombreTutorInput.value.trim()
           : "";
+
       const parentesco =
         parentescoSelect
           ? parentescoSelect.value.trim()
           : "";
+
       const cedulaTutor =
         cedulaTutorInput
           ? cedulaTutorInput.value.trim()
           : "";
-      const modalidadCobro =
-        modalidadCobroSelect
-          ? modalidadCobroSelect.value.trim()
+
+      const modalidad =
+        modalidadCobro
+          ? modalidadCobro.value.trim()
           : "";
-      const numeroCuenta =
-        numeroCuentaInput
-          ? numeroCuentaInput.value.trim()
+
+      const cuenta =
+        numeroCuenta
+          ? numeroCuenta.value.trim()
           : "";
+
+      const celular =
+        numeroCelular
+          ? numeroCelular.value.trim()
+          : "";
+
       const entregaCedula =
         entregaCedulaSelect
           ? entregaCedulaSelect.value
           : "";
+
       const motivo =
         motivoInput
           ? motivoInput.value.trim()
           : "";
 
+
       // ========================================================
       // VALIDACIONES
       // ========================================================
+
       if (!estudiante) {
+
         alert("⚠️ Seleccione un estudiante.");
+
         if (estudianteSelect) {
           estudianteSelect.focus();
         }
+
         return;
       }
+
+
       if (!nombreTutor) {
+
         alert(
           "⚠️ Ingrese el nombre completo del padre, madre o tutor."
         );
@@ -215,57 +305,123 @@ const URL_APPS_SCRIPT =
       }
 
 
-      if (!modalidadCobro) {
+      if (!modalidad) {
 
         alert(
           "⚠️ Seleccione la modalidad de cobro."
         );
 
-        if (modalidadCobroSelect) {
-          modalidadCobroSelect.focus();
+        if (modalidadCobro) {
+          modalidadCobro.focus();
         }
 
         return;
       }
-      // Validar número de cuenta solamente para ABONO EN CUENTA
+
+
+      // ========================================================
+      // VALIDAR CUENTA
+      // ========================================================
+
       if (
-        modalidadCobro === "ABONO EN CUENTA" &&
-        !numeroCuenta
+        modalidad === "ABONO EN CUENTA" &&
+        !cuenta
       ) {
+
         alert(
           "⚠️ Ingrese el N.º de cuenta del Banco Unión."
         );
-        if (numeroCuentaInput) {
-          numeroCuentaInput.focus();
+
+        if (numeroCuenta) {
+          numeroCuenta.focus();
         }
+
         return;
       }
+
+
+      // ========================================================
+      // VALIDAR CELULAR YASTA
+      // ========================================================
+
+      if (
+        modalidad === "BILLETERA MÓVIL YASTA" &&
+        !celular
+      ) {
+
+        alert(
+          "⚠️ Ingrese el N.º de celular de la Billetera Móvil YASTA."
+        );
+
+        if (numeroCelular) {
+          numeroCelular.focus();
+        }
+
+        return;
+      }
+
+
+      // Validar que el celular tenga 8 dígitos
+      if (
+        modalidad === "BILLETERA MÓVIL YASTA" &&
+        !/^\d{8}$/.test(celular)
+      ) {
+
+        alert(
+          "⚠️ El N.º de celular debe tener exactamente 8 dígitos."
+        );
+
+        if (numeroCelular) {
+          numeroCelular.focus();
+        }
+
+        return;
+      }
+
+
+      // ========================================================
+      // VALIDAR CÉDULA
+      // ========================================================
+
       if (!entregaCedula) {
+
         alert(
           "⚠️ Indique si entregó la fotocopia de la Cédula de Identidad."
         );
+
         if (entregaCedulaSelect) {
           entregaCedulaSelect.focus();
         }
+
         return;
       }
-      // Validar motivo solamente si selecciona NO
+
+
+      // ========================================================
+      // VALIDAR MOTIVO
+      // ========================================================
+
       if (
         entregaCedula === "No" &&
         !motivo
       ) {
+
         alert(
           "⚠️ Por favor indique el motivo de la no entrega."
         );
+
         if (motivoInput) {
           motivoInput.focus();
         }
+
         return;
       }
+
 
       // ========================================================
       // FECHA Y HORA
       // ========================================================
+
       const fecha =
         new Date().toLocaleString(
           "es-BO",
@@ -273,30 +429,47 @@ const URL_APPS_SCRIPT =
             timeZone: "America/La_Paz"
           }
         );
+
+
       // ========================================================
       // CREAR OBJETO DE DATOS
       // ========================================================
+
       lastData = {
+
         "Estudiante":
           estudiante,
+
         "Padre/Madre/Tutor":
           nombreTutor,
+
         "Parentesco":
           parentesco,
+
         "Cédula del Tutor":
           cedulaTutor,
+
         "Modalidad de cobro":
-          modalidadCobro,
+          modalidad,
+
         "Nro. de cuenta":
-          modalidadCobro === "ABONO EN CUENTA"
-            ? numeroCuenta
+          modalidad === "ABONO EN CUENTA"
+            ? cuenta
             : "N/A",
+
+        "Nro. de celular":
+          modalidad === "BILLETERA MÓVIL YASTA"
+            ? celular
+            : "N/A",
+
         "Cédula entregada":
           entregaCedula,
+
         "Motivo":
           entregaCedula === "No"
             ? motivo
             : "N/A",
+
         "Fecha":
           fecha
       };
@@ -305,76 +478,97 @@ const URL_APPS_SCRIPT =
       // ========================================================
       // MOSTRAR CARGANDO
       // ========================================================
+
       if (loading) {
         loading.style.display = "flex";
       }
+
       if (sendButton) {
+
         sendButton.disabled = true;
+
         sendButton.style.opacity = "0.6";
+
         sendButton.style.cursor = "not-allowed";
       }
+
 
       // ========================================================
       // ENVIAR A GOOGLE APPS SCRIPT
       // ========================================================
+
       try {
+
         if (
           !URL_APPS_SCRIPT ||
           URL_APPS_SCRIPT.includes("PEGAR_AQUI")
         ) {
+
           throw new Error(
             "No se configuró la URL de Google Apps Script."
           );
         }
-        /*
-         * Se utiliza URLSearchParams en lugar de
-         * application/json para evitar problemas de CORS
-         * con Google Apps Script.
-         */
-        const datosEnviar = new URLSearchParams();
+
+
+        const datosEnviar =
+          new URLSearchParams();
+
         datosEnviar.append(
           "data",
           JSON.stringify(lastData)
         );
-        const respuesta = await fetch(
-          URL_APPS_SCRIPT,
-          {
-            method: "POST",
-            body: datosEnviar
-          }
-        );
-        /*
-         * Apps Script devolverá una respuesta.
-         * Intentamos leerla, pero no dependemos
-         * estrictamente del formato.
-         */
+
+
+        const respuesta =
+          await fetch(
+            URL_APPS_SCRIPT,
+            {
+              method: "POST",
+              body: datosEnviar
+            }
+          );
+
+
+        // ======================================================
+        // LEER RESPUESTA
+        // ======================================================
 
         let resultado = null;
+
         try {
-          resultado = await respuesta.json();
+
+          resultado =
+            await respuesta.json();
+
         } catch (error) {
+
           console.log(
             "Respuesta recibida sin JSON:",
             error
           );
         }
-        // Si HTTP no fue correcto
+
+
         if (!respuesta.ok) {
+
           throw new Error(
             "El servidor respondió con error: " +
             respuesta.status
           );
         }
-        // Si Apps Script devuelve success:false
+
+
         if (
           resultado &&
           resultado.success === false
         ) {
+
           throw new Error(
             resultado.message ||
             "No se pudo guardar el registro."
           );
         }
+
 
         // ======================================================
         // ÉXITO
@@ -382,54 +576,111 @@ const URL_APPS_SCRIPT =
 
         modalMensaje.textContent =
           "✅ ¡Formulario enviado y guardado correctamente!";
+
         modal.style.display = "flex";
+
         descargarPDF.style.display =
           "inline-block";
+
 
         // ======================================================
         // LIMPIAR FORMULARIO
         // ======================================================
+
         form.reset();
-        // Ocultar número de cuenta
+
+
+        // Ocultar cuenta
+
         if (cuentaContainer) {
-          cuentaContainer.style.display = "none";
+
+          cuentaContainer.style.display =
+            "none";
         }
-        if (numeroCuentaInput) {
-          numeroCuentaInput.required = false;
-          numeroCuentaInput.value = "";
+
+
+        if (numeroCuenta) {
+
+          numeroCuenta.required = false;
+
+          numeroCuenta.value = "";
         }
+
+
+        // Ocultar celular
+
+        if (celularContainer) {
+
+          celularContainer.style.display =
+            "none";
+        }
+
+
+        if (numeroCelular) {
+
+          numeroCelular.required = false;
+
+          numeroCelular.value = "";
+        }
+
+
         // Ocultar motivo
+
         if (motivoContainer) {
-          motivoContainer.style.display = "none";
+
+          motivoContainer.style.display =
+            "none";
         }
+
+
         if (motivoInput) {
+
           motivoInput.required = false;
+
           motivoInput.value = "";
         }
+
+
       } catch (err) {
+
         console.error(
           "Error al enviar:",
           err
         );
+
         modalMensaje.textContent =
           "❌ No se pudo guardar el formulario.\n\n" +
           (err.message || err);
+
         modal.style.display = "flex";
-        descargarPDF.style.display = "none";
+
+        descargarPDF.style.display =
+          "none";
+
       } finally {
 
         // ======================================================
         // QUITAR CARGANDO
         // ======================================================
+
         if (loading) {
-          loading.style.display = "none";
+
+          loading.style.display =
+            "none";
         }
+
         if (sendButton) {
+
           sendButton.disabled = false;
+
           sendButton.style.opacity = "1";
-          sendButton.style.cursor = "pointer";
+
+          sendButton.style.cursor =
+            "pointer";
         }
+
       }
+
     });
   }
 
@@ -437,187 +688,306 @@ const URL_APPS_SCRIPT =
   // ============================================================
   // DESCARGAR PDF
   // ============================================================
+
   if (descargarPDF) {
+
     descargarPDF.addEventListener(
       "click",
       () => {
+
         if (!lastData) {
+
           alert(
             "No existen datos para generar el PDF."
           );
+
           return;
         }
+
+
         try {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
+
+          const { jsPDF } =
+            window.jspdf;
+
+          const doc =
+            new jsPDF();
+
 
           // ====================================================
           // ENCABEZADO
           // ====================================================
+
           doc.setFontSize(14);
+
           doc.text(
             "Registro de Padres y Tutores",
             20,
             20
           );
+
+
           doc.setFontSize(11);
+
           doc.text(
             "Unidad Educativa Jupapina - Tercero de Secundaria",
             20,
             28
           );
+
+
           doc.setFontSize(10);
+
           doc.text(
             "Registro y actualización para el Bono Juancito Pinto",
             20,
             35
           );
 
+
           // ====================================================
-          // TABLA DEL PDF
+          // TABLA
           // ====================================================
+
           const tableBody = [
+
             [
               "Estudiante",
               lastData.Estudiante || ""
             ],
+
             [
               "Padre/Madre/Tutor",
               lastData["Padre/Madre/Tutor"] || ""
             ],
+
             [
               "Parentesco",
               lastData.Parentesco || ""
             ],
+
             [
               "Cédula del Tutor",
               lastData["Cédula del Tutor"] || ""
             ],
+
             [
               "Modalidad de cobro",
               lastData["Modalidad de cobro"] || ""
             ],
+
             [
               "N.º de cuenta",
-              lastData["Nro. de cuenta"] || ""
+              lastData["Nro. de cuenta"] || "N/A"
             ],
+
+            [
+              "N.º de celular",
+              lastData["Nro. de celular"] || "N/A"
+            ],
+
             [
               "Cédula entregada",
               lastData["Cédula entregada"] || ""
             ],
+
             [
               "Motivo",
               lastData.Motivo || ""
             ],
+
             [
               "Fecha y Hora",
               lastData.Fecha || ""
             ]
+
           ];
+
 
           // ====================================================
           // GENERAR TABLA
           // ====================================================
+
           doc.autoTable({
+
             startY: 43,
+
             head: [
               [
                 "Campo",
                 "Valor"
               ]
             ],
+
             body: tableBody,
+
             styles: {
+
               fontSize: 10,
+
               cellPadding: 3,
+
               overflow: "linebreak"
+
             },
+
             headStyles: {
+
               fillColor: [
                 41,
                 128,
                 185
               ],
+
               textColor: [
                 255,
                 255,
                 255
               ],
+
               halign: "center"
+
             },
+
             columnStyles: {
+
               0: {
                 cellWidth: 55
               },
+
               1: {
                 cellWidth: 125
               }
+
             }
+
           });
+
 
           // ====================================================
           // PIE DEL DOCUMENTO
           // ====================================================
           const finalY =
             doc.lastAutoTable.finalY + 15;
+
           doc.setFontSize(9);
+
           doc.text(
-            "Documento generado mediante el formulario de registro.",
+            "Verifique el documento generado. Si detecta algún error, comuníquese con el asesor al 73747321.",
             20,
             finalY
           );
 
+
+          // ====================================================
+          // FIRMA PADRE/MADRE/TUTOR
+          // ====================================================
+
+          const firmaY =
+            finalY + 25;
+
+          doc.setFontSize(10);
+
+          doc.line(
+            65,
+            firmaY,
+            145,
+            firmaY
+          );
+
+          doc.text(
+            "FIRMA PADRE/MADRE/TUTOR",
+            105,
+            firmaY + 7,
+            {
+              align: "center"
+            }
+          );
+
+
           // ====================================================
           // NOMBRE DEL ARCHIVO
           // ====================================================
+
           const nombreArchivo =
-            (lastData.Estudiante || "sin_nombre")
+            (
+              lastData.Estudiante ||
+              "sin_nombre"
+            )
               .replace(/\s+/g, "_")
-              .replace(/[^a-zA-Z0-9ÁÉÍÓÚáéíóúÑñ_-]/g, "");
+              .replace(
+                /[^a-zA-Z0-9ÁÉÍÓÚáéíóúÑñ_-]/g,
+                ""
+              );
+
+
           const fileName =
             `Registro_Bono_Juancito_Pinto_${nombreArchivo}.pdf`;
+
 
           // ====================================================
           // GUARDAR PDF
           // ====================================================
+
           doc.save(fileName);
+
+
         } catch (err) {
+
           console.error(
             "Error al generar PDF:",
             err
           );
+
           alert(
             "❌ Error al generar PDF: " +
             (err.message || err)
           );
+
         }
+
       }
     );
   }
+
 
   // ============================================================
   // CERRAR MODAL
   // ============================================================
+
   if (cerrarModal) {
+
     cerrarModal.addEventListener(
       "click",
       () => {
-        modal.style.display = "none";
+
+        modal.style.display =
+          "none";
+
       }
     );
   }
 
+
   // ============================================================
   // CERRAR MODAL AL HACER CLIC FUERA
   // ============================================================
+
   if (modal) {
+
     modal.addEventListener(
       "click",
       (e) => {
+
         if (e.target === modal) {
-          modal.style.display = "none";
+
+          modal.style.display =
+            "none";
+
         }
+
       }
     );
   }
+
 });
