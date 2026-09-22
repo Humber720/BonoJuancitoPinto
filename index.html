@@ -11,8 +11,8 @@
   <header class="encabezado">
     <h1>Formulario de Registro y Actualización</h1>
     <h2>Bono Juancito Pinto</h2>
-    <h3>Curso: Segundo de Secundaria</h3>
-    <p class="asesores">Asesores: Prof. Raúl Mamani M. – Prof. Humberto Yupanqui C.</p>
+    <h3>Curso: Tercero de Secundaria</h3>
+    <p class="asesores">Asesores: Prof. Humberto Yupanqui C. – Prof. Raúl Mamani M.</p>
   </header>
   
   <main>
@@ -74,6 +74,28 @@
 
         <label for="cedulaTutor">Nro de cédula de identidad del padre/madre o tutor:</label>
         <input type="text" id="cedulaTutor" name="cedulaTutor" required placeholder="Ej: 12345678">
+
+<!-- Modalidad de cobro -->
+<label for="modalidadCobro"><strong>Modalidad de cobro:</strong></label>
+<select name="modalidadCobro" id="modalidadCobro" required>
+  <option value="">-- Seleccione la modalidad --</option>
+  <option value="COBRO EN CAJAS">COBRO EN CAJAS</option>
+  <option value="ABONO EN CUENTA">ABONO EN CUENTA</option>
+  <option value="BILLETERA MÓVIL YASTA">BILLETERA MÓVIL "YASTA"</option>
+</select>
+<!-- Nro. de cuenta: aparece solamente si selecciona ABONO EN CUENTA -->
+<div id="cuentaContainer" style="display:none; margin-top:10px;">
+  <label for="numeroCuenta">
+    N.º de cuenta del Banco Unión:
+  </label>
+  <input 
+    type="text" 
+    id="numeroCuenta" 
+    name="numeroCuenta" 
+    placeholder="Ej: 1234567890"
+    inputmode="numeric"
+  >
+</div>
 
         <label for="entregaCedula">¿Entregó la fotocopia de Cédula de Identidad del padre/madre o tutor?</label>
         <select id="entregaCedula" name="entregaCedula" required>
