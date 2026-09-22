@@ -1,33 +1,44 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
   // ============================================================
-  // ELEMENTOS DE LA INTERFAZ
+  // ELEMENTOS PRINCIPALES
   // ============================================================
 
   const form = document.getElementById("formRegistro");
+
   const sendButton = document.getElementById("sendList");
+
   const loading = document.getElementById("loading");
 
+  const loadingText =
+    document.querySelector(".loading-text");
+
   const modal = document.getElementById("modal");
-  const modalMensaje = document.getElementById("modal-mensaje");
-  const cerrarModal = document.getElementById("cerrar-modal");
-  const descargarPDF = document.getElementById("descargarPDF");
+
+  const modalMensaje =
+    document.getElementById("modal-mensaje");
+
+  const cerrarModal =
+    document.getElementById("cerrar-modal");
+
+  const descargarPDF =
+    document.getElementById("descargarPDF");
 
 
   // ============================================================
-  // CAMPOS DEL FORMULARIO
+  // DATOS DEL ESTUDIANTE
   // ============================================================
 
-  const estudianteSelect =
+  const estudiante =
     document.getElementById("estudiante");
 
-  const nombreTutorInput =
+  const nombreTutor =
     document.getElementById("nombreTutor");
 
-  const parentescoSelect =
+  const parentesco =
     document.getElementById("parentesco");
 
-  const cedulaTutorInput =
+  const cedulaTutor =
     document.getElementById("cedulaTutor");
 
 
@@ -52,10 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ============================================================
-  // ENTREGA DE CÉDULA
+  // CÉDULA ENTREGADA
   // ============================================================
 
-  const entregaCedulaSelect =
+  const entregaCedula =
     document.getElementById("entregaCedula");
 
   const motivoContainer =
@@ -66,361 +77,709 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ============================================================
-  // URL DE GOOGLE APPS SCRIPT
+  // FOTOGRAFÍAS
   // ============================================================
 
-const URL_APPS_SCRIPT =
-  "https://script.google.com/macros/s/AKfycbwOknPj0zHhF6Bx0pviaXQQuoDuvckndtlP_CjJU1aabPXQ_2bVAdRGGG9STi3B2ieqww/exec";
+  const fotosCedulaContainer =
+    document.getElementById("fotosCedulaContainer");
+
+  const fotoCI1Input =
+    document.getElementById("fotoCI1");
+
+  const fotoCI2Input =
+    document.getElementById("fotoCI2");
+
+  const previewCI1 =
+    document.getElementById("previewCI1");
+
+  const previewCI2 =
+    document.getElementById("previewCI2");
 
 
   // ============================================================
-  // VARIABLE PARA EL PDF
+  // VARIABLES DE FOTOGRAFÍAS
+  // ============================================================
+
+  let fotoCI1Data = "";
+
+  let fotoCI2Data = "";
+
+
+  // ============================================================
+  // URL ACTUAL DE APPS SCRIPT
+  // ============================================================
+
+  const URL_APPS_SCRIPT =
+    "https://script.google.com/macros/s/AKfycbx2oGydI1J6jGXKeIXLrQjd7dNEGyFk00rIaDC9doNL29hRwho4DVqwCa_T-rbBcaJKqA/exec";
+
+
+  // ============================================================
+  // ÚLTIMOS DATOS GUARDADOS PARA PDF
   // ============================================================
 
   let lastData = null;
 
 
   // ============================================================
-  // MOSTRAR / OCULTAR CUENTA O CELULAR
+  // MOSTRAR / OCULTAR CAMPOS SEGÚN MODALIDAD
   // ============================================================
 
-  if (
-    modalidadCobro &&
-    cuentaContainer &&
-    numeroCuenta &&
-    celularContainer &&
-    numeroCelular
-  ) {
+  modalidadCobro.addEventListener("change", function () {
 
-    modalidadCobro.addEventListener("change", function () {
+    const modalidad = modalidadCobro.value;
 
-      // ----------------------------------------------------------
-      // OCULTAR AMBOS CAMPOS
-      // ----------------------------------------------------------
+
+    // ----------------------------------------------------------
+    // ABONO EN CUENTA
+    // ----------------------------------------------------------
+
+    if (modalidad === "ABONO EN CUENTA") {
+
+      cuentaContainer.style.display = "block";
+
+      numeroCuenta.required = true;
+
+      numeroCuenta.focus();
+
+    } else {
 
       cuentaContainer.style.display = "none";
-      celularContainer.style.display = "none";
-
-
-      // ----------------------------------------------------------
-      // QUITAR OBLIGATORIEDAD
-      // ----------------------------------------------------------
 
       numeroCuenta.required = false;
-      numeroCelular.required = false;
-
-
-      // ----------------------------------------------------------
-      // LIMPIAR CAMPOS
-      // ----------------------------------------------------------
 
       numeroCuenta.value = "";
+
+    }
+
+
+    // ----------------------------------------------------------
+    // BILLETERA MÓVIL YASTA
+    // ----------------------------------------------------------
+
+    if (modalidad === "BILLETERA MÓVIL YASTA") {
+
+      celularContainer.style.display = "block";
+
+      numeroCelular.required = true;
+
+      numeroCelular.focus();
+
+    } else {
+
+      celularContainer.style.display = "none";
+
+      numeroCelular.required = false;
+
       numeroCelular.value = "";
 
+    }
 
-      // ----------------------------------------------------------
-      // ABONO EN CUENTA
-      // ----------------------------------------------------------
-
-      if (this.value === "ABONO EN CUENTA") {
-
-        cuentaContainer.style.display = "block";
-
-        numeroCuenta.required = true;
-
-        setTimeout(() => {
-          numeroCuenta.focus();
-        }, 100);
-      }
+  });
 
 
-      // ----------------------------------------------------------
-      // BILLETERA MÓVIL YASTA
-      // ----------------------------------------------------------
+  // ============================================================
+  // LIMPIAR FOTOGRAFÍAS
+  // ============================================================
 
-      if (this.value === "BILLETERA MÓVIL YASTA") {
+  function limpiarFotosCedula() {
 
-        celularContainer.style.display = "block";
+    fotoCI1Data = "";
 
-        numeroCelular.required = true;
+    fotoCI2Data = "";
 
-        setTimeout(() => {
-          numeroCelular.focus();
-        }, 100);
-      }
+    fotoCI1Input.value = "";
 
-    });
+    fotoCI2Input.value = "";
+
+    previewCI1.innerHTML = "";
+
+    previewCI2.innerHTML = "";
+
+    fotoCI1Input.required = false;
+
   }
 
 
   // ============================================================
-  // MOSTRAR / OCULTAR MOTIVO
+  // MOSTRAR / OCULTAR CÉDULA Y FOTOGRAFÍAS
   // ============================================================
 
-  if (
-    entregaCedulaSelect &&
-    motivoContainer &&
-    motivoInput
-  ) {
+  entregaCedula.addEventListener("change", function () {
 
-    entregaCedulaSelect.addEventListener("change", () => {
+    const valor = entregaCedula.value;
 
-      if (entregaCedulaSelect.value === "No") {
 
-        motivoContainer.style.display = "block";
+    // ----------------------------------------------------------
+    // SI NO ENTREGA FOTOCOPIA
+    // ----------------------------------------------------------
 
-        motivoInput.required = true;
+    if (valor === "No") {
 
-        setTimeout(() => {
-          motivoInput.focus();
-        }, 100);
+      // Mostrar motivo
+      motivoContainer.style.display = "block";
 
-      } else {
+      motivoInput.required = true;
 
-        motivoContainer.style.display = "none";
 
-        motivoInput.required = false;
+      // Mostrar fotografías
+      fotosCedulaContainer.style.display = "block";
 
-        motivoInput.value = "";
+      fotoCI1Input.required = true;
+
+
+    } else {
+
+      // Ocultar motivo
+      motivoContainer.style.display = "none";
+
+      motivoInput.required = false;
+
+      motivoInput.value = "";
+
+
+      // Ocultar fotografías
+      fotosCedulaContainer.style.display = "none";
+
+      limpiarFotosCedula();
+
+    }
+
+  });
+
+
+  // ============================================================
+  // COMPRIMIR IMAGEN
+  // ============================================================
+
+  function comprimirImagen(archivo) {
+
+    return new Promise(function (resolve, reject) {
+
+      if (!archivo) {
+
+        reject(
+          new Error("No se seleccionó ninguna imagen.")
+        );
+
+        return;
       }
 
+
+      // --------------------------------------------------------
+      // VERIFICAR QUE SEA UNA IMAGEN
+      // --------------------------------------------------------
+
+      if (!archivo.type.startsWith("image/")) {
+
+        reject(
+          new Error(
+            "El archivo seleccionado no es una imagen."
+          )
+        );
+
+        return;
+      }
+
+
+      // --------------------------------------------------------
+      // TAMAÑO MÁXIMO ORIGINAL
+      // --------------------------------------------------------
+
+      if (archivo.size > 10 * 1024 * 1024) {
+
+        reject(
+          new Error(
+            "La imagen es demasiado grande. Seleccione una fotografía menor a 10 MB."
+          )
+        );
+
+        return;
+      }
+
+
+      const lector = new FileReader();
+
+
+      lector.onload = function (evento) {
+
+        const imagen = new Image();
+
+
+        imagen.onload = function () {
+
+          let ancho = imagen.width;
+
+          let alto = imagen.height;
+
+
+          // ----------------------------------------------------
+          // REDUCIR A MÁXIMO 1400 PX
+          // ----------------------------------------------------
+
+          const maximo = 1400;
+
+
+          if (ancho > maximo || alto > maximo) {
+
+            if (ancho > alto) {
+
+              alto =
+                Math.round(
+                  alto * maximo / ancho
+                );
+
+              ancho = maximo;
+
+            } else {
+
+              ancho =
+                Math.round(
+                  ancho * maximo / alto
+                );
+
+              alto = maximo;
+
+            }
+
+          }
+
+
+          // ----------------------------------------------------
+          // CANVAS
+          // ----------------------------------------------------
+
+          const canvas =
+            document.createElement("canvas");
+
+          canvas.width = ancho;
+
+          canvas.height = alto;
+
+
+          const contexto =
+            canvas.getContext("2d");
+
+
+          contexto.drawImage(
+            imagen,
+            0,
+            0,
+            ancho,
+            alto
+          );
+
+
+          // ----------------------------------------------------
+          // CONVERTIR A JPEG
+          // ----------------------------------------------------
+
+          const resultado =
+            canvas.toDataURL(
+              "image/jpeg",
+              0.70
+            );
+
+
+          resolve(resultado);
+
+        };
+
+
+        imagen.onerror = function () {
+
+          reject(
+            new Error(
+              "No se pudo procesar la imagen."
+            )
+          );
+
+        };
+
+
+        imagen.src = evento.target.result;
+
+      };
+
+
+      lector.onerror = function () {
+
+        reject(
+          new Error(
+            "No se pudo leer la imagen."
+          )
+        );
+
+      };
+
+
+      lector.readAsDataURL(archivo);
+
     });
+
   }
+
+
+  // ============================================================
+  // CARGAR FOTO 1
+  // ============================================================
+
+  fotoCI1Input.addEventListener(
+    "change",
+    async function () {
+
+      const archivo = fotoCI1Input.files[0];
+
+
+      if (!archivo) {
+
+        fotoCI1Data = "";
+
+        previewCI1.innerHTML = "";
+
+        return;
+
+      }
+
+
+      previewCI1.innerHTML =
+        "<p>⏳ Procesando fotografía...</p>";
+
+
+      try {
+
+        fotoCI1Data =
+          await comprimirImagen(archivo);
+
+
+        previewCI1.innerHTML =
+          `
+          <div class="preview-ci-contenedor">
+
+            <img
+              src="${fotoCI1Data}"
+              alt="Vista previa C.I. 1"
+            >
+
+            <p>
+              ✅ Fotografía 1 cargada correctamente.
+            </p>
+
+          </div>
+          `;
+
+      } catch (error) {
+
+        fotoCI1Data = "";
+
+        previewCI1.innerHTML =
+          `
+          <p>
+            ❌ ${error.message}
+          </p>
+          `;
+
+        fotoCI1Input.value = "";
+
+      }
+
+    }
+  );
+
+
+  // ============================================================
+  // CARGAR FOTO 2
+  // ============================================================
+
+  fotoCI2Input.addEventListener(
+    "change",
+    async function () {
+
+      const archivo = fotoCI2Input.files[0];
+
+
+      if (!archivo) {
+
+        fotoCI2Data = "";
+
+        previewCI2.innerHTML = "";
+
+        return;
+
+      }
+
+
+      previewCI2.innerHTML =
+        "<p>⏳ Procesando fotografía...</p>";
+
+
+      try {
+
+        fotoCI2Data =
+          await comprimirImagen(archivo);
+
+
+        previewCI2.innerHTML =
+          `
+          <div class="preview-ci-contenedor">
+
+            <img
+              src="${fotoCI2Data}"
+              alt="Vista previa C.I. 2"
+            >
+
+            <p>
+              ✅ Fotografía 2 cargada correctamente.
+            </p>
+
+          </div>
+          `;
+
+      } catch (error) {
+
+        fotoCI2Data = "";
+
+        previewCI2.innerHTML =
+          `
+          <p>
+            ❌ ${error.message}
+          </p>
+          `;
+
+        fotoCI2Input.value = "";
+
+      }
+
+    }
+  );
 
 
   // ============================================================
   // ENVÍO DEL FORMULARIO
   // ============================================================
 
-  if (form) {
-
-    form.addEventListener("submit", async (e) => {
+  form.addEventListener(
+    "submit",
+    async function (e) {
 
       e.preventDefault();
 
 
-      // ========================================================
-      // LEER DATOS
-      // ========================================================
+      // --------------------------------------------------------
+      // OBTENER DATOS
+      // --------------------------------------------------------
 
-      const estudiante =
-        estudianteSelect
-          ? estudianteSelect.value.trim()
-          : "";
+      const estudianteValor =
+        estudiante.value.trim();
 
-      const nombreTutor =
-        nombreTutorInput
-          ? nombreTutorInput.value.trim()
-          : "";
+      const nombreTutorValor =
+        nombreTutor.value.trim();
 
-      const parentesco =
-        parentescoSelect
-          ? parentescoSelect.value.trim()
-          : "";
+      const parentescoValor =
+        parentesco.value.trim();
 
-      const cedulaTutor =
-        cedulaTutorInput
-          ? cedulaTutorInput.value.trim()
-          : "";
+      const cedulaTutorValor =
+        cedulaTutor.value.trim();
 
-      const modalidad =
-        modalidadCobro
-          ? modalidadCobro.value.trim()
-          : "";
+      const modalidadValor =
+        modalidadCobro.value.trim();
 
-      const cuenta =
-        numeroCuenta
-          ? numeroCuenta.value.trim()
-          : "";
+      const cuentaValor =
+        numeroCuenta.value.trim();
 
-      const celular =
-        numeroCelular
-          ? numeroCelular.value.trim()
-          : "";
+      const celularValor =
+        numeroCelular.value.trim();
 
-      const entregaCedula =
-        entregaCedulaSelect
-          ? entregaCedulaSelect.value
-          : "";
+      const entregaCedulaValor =
+        entregaCedula.value.trim();
 
-      const motivo =
-        motivoInput
-          ? motivoInput.value.trim()
-          : "";
+      const motivoValor =
+        motivoInput.value.trim();
 
 
-      // ========================================================
+      // --------------------------------------------------------
       // VALIDACIONES
-      // ========================================================
+      // --------------------------------------------------------
 
-      if (!estudiante) {
-
-        alert("⚠️ Seleccione un estudiante.");
-
-        if (estudianteSelect) {
-          estudianteSelect.focus();
-        }
-
-        return;
-      }
-
-
-      if (!nombreTutor) {
+      if (!estudianteValor) {
 
         alert(
-          "⚠️ Ingrese el nombre completo del padre, madre o tutor."
+          "Seleccione un estudiante."
         );
 
-        if (nombreTutorInput) {
-          nombreTutorInput.focus();
-        }
-
         return;
+
       }
 
 
-      if (!parentesco) {
-
-        alert("⚠️ Seleccione el parentesco.");
-
-        if (parentescoSelect) {
-          parentescoSelect.focus();
-        }
-
-        return;
-      }
-
-
-      if (!cedulaTutor) {
+      if (!nombreTutorValor) {
 
         alert(
-          "⚠️ Ingrese el número de cédula del padre/madre/tutor."
+          "Ingrese el nombre completo del padre, madre o tutor."
         );
 
-        if (cedulaTutorInput) {
-          cedulaTutorInput.focus();
-        }
+        nombreTutor.focus();
 
         return;
+
       }
 
 
-      if (!modalidad) {
+      if (!parentescoValor) {
 
         alert(
-          "⚠️ Seleccione la modalidad de cobro."
+          "Seleccione el parentesco."
         );
 
-        if (modalidadCobro) {
-          modalidadCobro.focus();
-        }
+        parentesco.focus();
 
         return;
+
       }
 
 
-      // ========================================================
+      if (!cedulaTutorValor) {
+
+        alert(
+          "Ingrese el número de Cédula de Identidad."
+        );
+
+        cedulaTutor.focus();
+
+        return;
+
+      }
+
+
+      if (!modalidadValor) {
+
+        alert(
+          "Seleccione la modalidad de cobro."
+        );
+
+        modalidadCobro.focus();
+
+        return;
+
+      }
+
+
+      // --------------------------------------------------------
       // VALIDAR CUENTA
-      // ========================================================
+      // --------------------------------------------------------
 
       if (
-        modalidad === "ABONO EN CUENTA" &&
-        !cuenta
+        modalidadValor === "ABONO EN CUENTA" &&
+        !cuentaValor
       ) {
 
         alert(
-          "⚠️ Ingrese el N.º de cuenta del Banco Unión."
+          "Ingrese el número de cuenta del Banco Unión."
         );
 
-        if (numeroCuenta) {
-          numeroCuenta.focus();
-        }
+        numeroCuenta.focus();
 
         return;
+
       }
 
 
-      // ========================================================
-      // VALIDAR CELULAR YASTA
-      // ========================================================
+      // --------------------------------------------------------
+      // VALIDAR CELULAR
+      // --------------------------------------------------------
 
       if (
-        modalidad === "BILLETERA MÓVIL YASTA" &&
-        !celular
+        modalidadValor ===
+        "BILLETERA MÓVIL YASTA"
       ) {
 
-        alert(
-          "⚠️ Ingrese el N.º de celular de la Billetera Móvil YASTA."
-        );
+        if (!celularValor) {
 
-        if (numeroCelular) {
+          alert(
+            "Ingrese el número de celular."
+          );
+
           numeroCelular.focus();
+
+          return;
+
         }
 
-        return;
-      }
 
+        if (!/^\d{8}$/.test(celularValor)) {
 
-      // Validar que el celular tenga 8 dígitos
-      if (
-        modalidad === "BILLETERA MÓVIL YASTA" &&
-        !/^\d{8}$/.test(celular)
-      ) {
+          alert(
+            "El número de celular debe tener exactamente 8 dígitos."
+          );
 
-        alert(
-          "⚠️ El N.º de celular debe tener exactamente 8 dígitos."
-        );
-
-        if (numeroCelular) {
           numeroCelular.focus();
+
+          return;
+
         }
 
-        return;
       }
 
 
-      // ========================================================
-      // VALIDAR CÉDULA
-      // ========================================================
+      // --------------------------------------------------------
+      // VALIDAR ENTREGA CÉDULA
+      // --------------------------------------------------------
 
-      if (!entregaCedula) {
+      if (!entregaCedulaValor) {
 
         alert(
-          "⚠️ Indique si entregó la fotocopia de la Cédula de Identidad."
+          "Seleccione si entregó la fotocopia de Cédula de Identidad."
         );
 
-        if (entregaCedulaSelect) {
-          entregaCedulaSelect.focus();
-        }
+        entregaCedula.focus();
 
         return;
+
       }
 
 
-      // ========================================================
+      // --------------------------------------------------------
       // VALIDAR MOTIVO
-      // ========================================================
+      // --------------------------------------------------------
 
       if (
-        entregaCedula === "No" &&
-        !motivo
+        entregaCedulaValor === "No" &&
+        !motivoValor
       ) {
 
         alert(
-          "⚠️ Por favor indique el motivo de la no entrega."
+          "Indique el motivo por el cual no entregó la fotocopia."
         );
 
-        if (motivoInput) {
-          motivoInput.focus();
-        }
+        motivoInput.focus();
 
         return;
+
       }
 
 
-      // ========================================================
-      // FECHA Y HORA
-      // ========================================================
+      // --------------------------------------------------------
+      // VALIDAR FOTO 1
+      // --------------------------------------------------------
+
+      if (
+        entregaCedulaValor === "No" &&
+        !fotoCI1Data
+      ) {
+
+        alert(
+          "Debe tomar o seleccionar la Fotografía 1 de la Cédula de Identidad."
+        );
+
+        fotoCI1Input.focus();
+
+        return;
+
+      }
+
+
+      // --------------------------------------------------------
+      // FECHA
+      // --------------------------------------------------------
 
       const fecha =
         new Date().toLocaleString(
@@ -431,89 +790,88 @@ const URL_APPS_SCRIPT =
         );
 
 
-      // ========================================================
-      // CREAR OBJETO DE DATOS
-      // ========================================================
+      // --------------------------------------------------------
+      // DATOS PARA GOOGLE SHEETS
+      // --------------------------------------------------------
 
       lastData = {
 
         "Estudiante":
-          estudiante,
+          estudianteValor,
 
         "Padre/Madre/Tutor":
-          nombreTutor,
+          nombreTutorValor,
 
         "Parentesco":
-          parentesco,
+          parentescoValor,
 
         "Cédula del Tutor":
-          cedulaTutor,
+          cedulaTutorValor,
 
         "Modalidad de cobro":
-          modalidad,
+          modalidadValor,
 
         "Nro. de cuenta":
-          modalidad === "ABONO EN CUENTA"
-            ? cuenta
+          modalidadValor === "ABONO EN CUENTA"
+            ? cuentaValor
             : "N/A",
 
         "Nro. de celular":
-          modalidad === "BILLETERA MÓVIL YASTA"
-            ? celular
+          modalidadValor ===
+          "BILLETERA MÓVIL YASTA"
+            ? celularValor
             : "N/A",
 
         "Cédula entregada":
-          entregaCedula,
+          entregaCedulaValor,
 
         "Motivo":
-          entregaCedula === "No"
-            ? motivo
+          entregaCedulaValor === "No"
+            ? motivoValor
             : "N/A",
+
+        "Foto C.I. 1":
+          entregaCedulaValor === "No"
+            ? fotoCI1Data
+            : "",
+
+        "Foto C.I. 2":
+          entregaCedulaValor === "No"
+            ? fotoCI2Data
+            : "",
 
         "Fecha":
           fecha
+
       };
 
 
-      // ========================================================
-      // MOSTRAR CARGANDO
-      // ========================================================
+      // --------------------------------------------------------
+      // CARGANDO
+      // --------------------------------------------------------
 
-      if (loading) {
-        loading.style.display = "flex";
+      sendButton.disabled = true;
+
+      loading.style.display = "flex";
+
+      if (loadingText) {
+
+        loadingText.textContent =
+          "⏳ Guardando registro...";
+
       }
 
-      if (sendButton) {
-
-        sendButton.disabled = true;
-
-        sendButton.style.opacity = "0.6";
-
-        sendButton.style.cursor = "not-allowed";
-      }
-
-
-      // ========================================================
-      // ENVIAR A GOOGLE APPS SCRIPT
-      // ========================================================
 
       try {
 
-        if (
-          !URL_APPS_SCRIPT ||
-          URL_APPS_SCRIPT.includes("PEGAR_AQUI")
-        ) {
+        // ------------------------------------------------------
+        // ENVIAR A APPS SCRIPT
+        // ------------------------------------------------------
 
-          throw new Error(
-            "No se configuró la URL de Google Apps Script."
-          );
-        }
-
-
-        const datosEnviar =
+        const parametros =
           new URLSearchParams();
 
-        datosEnviar.append(
+        parametros.append(
           "data",
           JSON.stringify(lastData)
         );
@@ -524,470 +882,385 @@ const URL_APPS_SCRIPT =
             URL_APPS_SCRIPT,
             {
               method: "POST",
-              body: datosEnviar
+              body: parametros
             }
           );
 
 
-        // ======================================================
-        // LEER RESPUESTA
-        // ======================================================
+        const texto =
+          await respuesta.text();
 
-        let resultado = null;
+
+        let resultado;
+
 
         try {
 
           resultado =
-            await respuesta.json();
+            JSON.parse(texto);
 
         } catch (error) {
 
-          console.log(
-            "Respuesta recibida sin JSON:",
-            error
-          );
-        }
-
-
-        if (!respuesta.ok) {
-
           throw new Error(
-            "El servidor respondió con error: " +
-            respuesta.status
+            "La respuesta del servidor no tiene un formato válido."
           );
+
         }
 
 
-        if (
-          resultado &&
-          resultado.success === false
-        ) {
+        if (!resultado.success) {
 
           throw new Error(
             resultado.message ||
             "No se pudo guardar el registro."
           );
+
         }
 
 
-        // ======================================================
+        // ------------------------------------------------------
         // ÉXITO
-        // ======================================================
+        // ------------------------------------------------------
 
-        modalMensaje.textContent =
-          "✅ ¡Formulario enviado y guardado correctamente!";
+        modalMensaje.innerHTML =
+          `
+          <strong>✅ Registro guardado correctamente.</strong>
+          <br><br>
+          El registro de
+          <strong>${estudianteValor}</strong>
+          fue guardado correctamente.
+          <br><br>
+          Puede descargar el comprobante en PDF.
+          `;
+
 
         modal.style.display = "flex";
 
-        descargarPDF.style.display =
-          "inline-block";
+        descargarPDF.style.display = "inline-block";
 
 
-        // ======================================================
+        // ------------------------------------------------------
         // LIMPIAR FORMULARIO
-        // ======================================================
+        // ------------------------------------------------------
 
         form.reset();
 
 
-        // Ocultar cuenta
+        cuentaContainer.style.display = "none";
 
-        if (cuentaContainer) {
+        celularContainer.style.display = "none";
 
-          cuentaContainer.style.display =
-            "none";
+        numeroCuenta.required = false;
+
+        numeroCelular.required = false;
+
+
+        motivoContainer.style.display = "none";
+
+        motivoInput.required = false;
+
+
+        fotosCedulaContainer.style.display = "none";
+
+        limpiarFotosCedula();
+
+
+        if (loadingText) {
+
+          loadingText.textContent =
+            "⏳ Procesando...";
+
         }
 
 
-        if (numeroCuenta) {
+      } catch (error) {
 
-          numeroCuenta.required = false;
-
-          numeroCuenta.value = "";
-        }
+        console.error(error);
 
 
-        // Ocultar celular
-
-        if (celularContainer) {
-
-          celularContainer.style.display =
-            "none";
-        }
-
-
-        if (numeroCelular) {
-
-          numeroCelular.required = false;
-
-          numeroCelular.value = "";
-        }
-
-
-        // Ocultar motivo
-
-        if (motivoContainer) {
-
-          motivoContainer.style.display =
-            "none";
-        }
-
-
-        if (motivoInput) {
-
-          motivoInput.required = false;
-
-          motivoInput.value = "";
-        }
-
-
-      } catch (err) {
-
-        console.error(
-          "Error al enviar:",
-          err
+        alert(
+          "❌ No se pudo guardar el registro.\n\n" +
+          error.message
         );
 
-        modalMensaje.textContent =
-          "❌ No se pudo guardar el formulario.\n\n" +
-          (err.message || err);
-
-        modal.style.display = "flex";
-
-        descargarPDF.style.display =
-          "none";
 
       } finally {
 
-        // ======================================================
-        // QUITAR CARGANDO
-        // ======================================================
+        sendButton.disabled = false;
 
-        if (loading) {
-
-          loading.style.display =
-            "none";
-        }
-
-        if (sendButton) {
-
-          sendButton.disabled = false;
-
-          sendButton.style.opacity = "1";
-
-          sendButton.style.cursor =
-            "pointer";
-        }
+        loading.style.display = "none";
 
       }
 
-    });
-  }
+    }
+  );
 
 
   // ============================================================
-  // DESCARGAR PDF
+  // GENERAR PDF
   // ============================================================
 
-  if (descargarPDF) {
+  descargarPDF.addEventListener(
+    "click",
+    function () {
 
-    descargarPDF.addEventListener(
-      "click",
-      () => {
+      if (!lastData) {
 
-        if (!lastData) {
+        alert(
+          "No existen datos para generar el PDF."
+        );
 
-          alert(
-            "No existen datos para generar el PDF."
-          );
-
-          return;
-        }
-
-
-        try {
-
-          const { jsPDF } =
-            window.jspdf;
-
-          const doc =
-            new jsPDF();
-
-
-          // ====================================================
-          // ENCABEZADO
-          // ====================================================
-
-          doc.setFontSize(14);
-
-          doc.text(
-            "Registro de Padres y Tutores",
-            20,
-            20
-          );
-
-
-          doc.setFontSize(11);
-
-          doc.text(
-            "Unidad Educativa Jupapina - Tercero de Secundaria",
-            20,
-            28
-          );
-
-
-          doc.setFontSize(10);
-
-          doc.text(
-            "Registro y actualización para el Bono Juancito Pinto",
-            20,
-            35
-          );
-
-
-          // ====================================================
-          // TABLA
-          // ====================================================
-
-          const tableBody = [
-
-            [
-              "Estudiante",
-              lastData.Estudiante || ""
-            ],
-
-            [
-              "Padre/Madre/Tutor",
-              lastData["Padre/Madre/Tutor"] || ""
-            ],
-
-            [
-              "Parentesco",
-              lastData.Parentesco || ""
-            ],
-
-            [
-              "Cédula del Tutor",
-              lastData["Cédula del Tutor"] || ""
-            ],
-
-            [
-              "Modalidad de cobro",
-              lastData["Modalidad de cobro"] || ""
-            ],
-
-            [
-              "N.º de cuenta",
-              lastData["Nro. de cuenta"] || "N/A"
-            ],
-
-            [
-              "N.º de celular",
-              lastData["Nro. de celular"] || "N/A"
-            ],
-
-            [
-              "Cédula entregada",
-              lastData["Cédula entregada"] || ""
-            ],
-
-            [
-              "Motivo",
-              lastData.Motivo || ""
-            ],
-
-            [
-              "Fecha y Hora",
-              lastData.Fecha || ""
-            ]
-
-          ];
-
-
-          // ====================================================
-          // GENERAR TABLA
-          // ====================================================
-
-          doc.autoTable({
-
-            startY: 43,
-
-            head: [
-              [
-                "Campo",
-                "Valor"
-              ]
-            ],
-
-            body: tableBody,
-
-            styles: {
-
-              fontSize: 10,
-
-              cellPadding: 3,
-
-              overflow: "linebreak"
-
-            },
-
-            headStyles: {
-
-              fillColor: [
-                41,
-                128,
-                185
-              ],
-
-              textColor: [
-                255,
-                255,
-                255
-              ],
-
-              halign: "center"
-
-            },
-
-            columnStyles: {
-
-              0: {
-                cellWidth: 55
-              },
-
-              1: {
-                cellWidth: 125
-              }
-
-            }
-
-          });
-
-
-          // ====================================================
-          // PIE DEL DOCUMENTO
-          // ====================================================
-          const finalY =
-            doc.lastAutoTable.finalY + 15;
-
-          doc.setFontSize(9);
-
-          doc.text(
-            "Verifique el documento generado. Si detecta algún error, comuníquese con el asesor al 73747321.",
-            20,
-            finalY
-          );
-
-
-          // ====================================================
-          // FIRMA PADRE/MADRE/TUTOR
-          // ====================================================
-
-          const firmaY =
-            finalY + 25;
-
-          doc.setFontSize(10);
-
-          doc.line(
-            65,
-            firmaY,
-            145,
-            firmaY
-          );
-
-          doc.text(
-            "FIRMA PADRE/MADRE/TUTOR",
-            105,
-            firmaY + 7,
-            {
-              align: "center"
-            }
-          );
-
-
-          // ====================================================
-          // NOMBRE DEL ARCHIVO
-          // ====================================================
-
-          const nombreArchivo =
-            (
-              lastData.Estudiante ||
-              "sin_nombre"
-            )
-              .replace(/\s+/g, "_")
-              .replace(
-                /[^a-zA-Z0-9ÁÉÍÓÚáéíóúÑñ_-]/g,
-                ""
-              );
-
-
-          const fileName =
-            `Registro_Bono_Juancito_Pinto_${nombreArchivo}.pdf`;
-
-
-          // ====================================================
-          // GUARDAR PDF
-          // ====================================================
-
-          doc.save(fileName);
-
-
-        } catch (err) {
-
-          console.error(
-            "Error al generar PDF:",
-            err
-          );
-
-          alert(
-            "❌ Error al generar PDF: " +
-            (err.message || err)
-          );
-
-        }
+        return;
 
       }
-    );
-  }
+
+
+      const {
+        jsPDF
+      } = window.jspdf;
+
+
+      const doc =
+        new jsPDF();
+
+
+      // --------------------------------------------------------
+      // ENCABEZADO
+      // --------------------------------------------------------
+
+      doc.setFontSize(16);
+
+      doc.text(
+        "Registro de Padres y Tutores",
+        105,
+        20,
+        {
+          align: "center"
+        }
+      );
+
+
+      doc.setFontSize(12);
+
+      doc.text(
+        "Unidad Educativa Jupapina - Segundo de Secundaria",
+        105,
+        29,
+        {
+          align: "center"
+        }
+      );
+
+
+      doc.setFontSize(10);
+
+      doc.text(
+        "Registro y actualización para el Bono Juancito Pinto",
+        105,
+        37,
+        {
+          align: "center"
+        }
+      );
+
+
+      // --------------------------------------------------------
+      // TABLA
+      // --------------------------------------------------------
+
+      const filas = [
+
+        [
+          "Estudiante",
+          lastData["Estudiante"]
+        ],
+
+        [
+          "Padre/Madre/Tutor",
+          lastData["Padre/Madre/Tutor"]
+        ],
+
+        [
+          "Parentesco",
+          lastData["Parentesco"]
+        ],
+
+        [
+          "Cédula del Tutor",
+          lastData["Cédula del Tutor"]
+        ],
+
+        [
+          "Modalidad de cobro",
+          lastData["Modalidad de cobro"]
+        ],
+
+        [
+          "Nro. de cuenta",
+          lastData["Nro. de cuenta"]
+        ],
+
+        [
+          "Nro. de celular",
+          lastData["Nro. de celular"]
+        ],
+
+        [
+          "Cédula entregada",
+          lastData["Cédula entregada"]
+        ],
+
+        [
+          "Motivo",
+          lastData["Motivo"]
+        ],
+
+        [
+          "Fecha",
+          lastData["Fecha"]
+        ]
+
+      ];
+
+
+      doc.autoTable({
+
+        startY: 45,
+
+        head: [
+          [
+            "Campo",
+            "Información"
+          ]
+        ],
+
+        body: filas,
+
+        theme: "grid",
+
+        styles: {
+          fontSize: 9
+        },
+
+        headStyles: {
+          fontSize: 9
+        },
+
+        columnStyles: {
+
+          0: {
+            cellWidth: 55
+          },
+
+          1: {
+            cellWidth: 125
+          }
+
+        }
+
+      });
+
+
+      // --------------------------------------------------------
+      // ADVERTENCIA
+      // --------------------------------------------------------
+
+      const finalY =
+        doc.lastAutoTable.finalY + 15;
+
+
+      doc.setFontSize(9);
+
+
+      doc.text(
+        "Verifique el documento generado. Si detecta algún error, comuníquese con el asesor al 73747321.",
+        20,
+        finalY
+      );
+
+
+      // ========================================================
+      // FIRMA PADRE/MADRE/TUTOR
+      // ========================================================
+
+      const firmaY =
+        finalY + 25;
+
+
+      doc.setFontSize(10);
+
+
+      doc.line(
+        65,
+        firmaY,
+        145,
+        firmaY
+      );
+
+
+      doc.text(
+        "FIRMA PADRE/MADRE/TUTOR",
+        105,
+        firmaY + 7,
+        {
+          align: "center"
+        }
+      );
+
+
+      // --------------------------------------------------------
+      // DESCARGAR
+      // --------------------------------------------------------
+
+      const nombreArchivo =
+        lastData["Estudiante"]
+          .replace(/[^\w\s-]/g, "")
+          .replace(/\s+/g, "_");
+
+
+      doc.save(
+        "Registro_Bono_" +
+        nombreArchivo +
+        ".pdf"
+      );
+
+    }
+  );
 
 
   // ============================================================
   // CERRAR MODAL
   // ============================================================
 
-  if (cerrarModal) {
+  cerrarModal.addEventListener(
+    "click",
+    function () {
 
-    cerrarModal.addEventListener(
-      "click",
-      () => {
+      modal.style.display = "none";
 
-        modal.style.display =
-          "none";
+      descargarPDF.style.display = "none";
 
-      }
-    );
-  }
+    }
+  );
 
 
   // ============================================================
-  // CERRAR MODAL AL HACER CLIC FUERA
+  // CERRAR MODAL HACIENDO CLICK AFUERA
   // ============================================================
 
-  if (modal) {
+  window.addEventListener(
+    "click",
+    function (event) {
 
-    modal.addEventListener(
-      "click",
-      (e) => {
+      if (event.target === modal) {
 
-        if (e.target === modal) {
+        modal.style.display = "none";
 
-          modal.style.display =
-            "none";
-
-        }
+        descargarPDF.style.display = "none";
 
       }
-    );
-  }
+
+    }
+  );
 
 });
