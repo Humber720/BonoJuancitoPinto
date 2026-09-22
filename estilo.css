@@ -730,3 +730,203 @@ input:focus-visible {
 
   outline-offset: 2px;
 }
+
+/* ==========================================================
+   FOTOGRAFÍAS DE CÉDULA DE IDENTIDAD
+   ========================================================== */
+
+.fotos-ci-box {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 10px;
+  padding: 18px;
+  border: 2px dashed #3498db;
+  border-radius: 15px;
+  background: #f4f9fd;
+  overflow: hidden;
+}
+
+.fotos-ci-box h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #1f5f8b;
+  font-size: 18px;
+}
+
+.fotos-ci-ayuda {
+  margin-bottom: 18px;
+  line-height: 1.5;
+  font-size: 14px;
+  color: #455a64;
+}
+
+/* ----------------------------------------------------------
+   CADA CAMPO DE FOTOGRAFÍA
+   ---------------------------------------------------------- */
+
+.foto-campo {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 18px;
+  overflow: hidden;
+}
+
+.foto-campo label {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* ----------------------------------------------------------
+   BOTÓN / SELECTOR DE ARCHIVO
+   ---------------------------------------------------------- */
+
+.foto-campo input[type="file"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #455a64;
+  cursor: pointer;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* ----------------------------------------------------------
+   CONTENEDOR DE VISTA PREVIA
+   ---------------------------------------------------------- */
+
+.preview-ci {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ----------------------------------------------------------
+   CAJA QUE CONTIENE LA IMAGEN
+   ---------------------------------------------------------- */
+
+.preview-ci-contenedor {
+  width: 100%;
+  max-width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #dce4e8;
+  box-shadow: 0 3px 10px rgba(31, 78, 121, 0.08);
+  overflow: hidden;
+}
+
+/* ----------------------------------------------------------
+   IMAGEN
+   ---------------------------------------------------------- */
+
+.preview-ci img {
+  display: block;
+
+  width: auto;
+  max-width: 100%;
+  height: auto;
+
+  max-height: 350px;
+
+  object-fit: contain;
+
+  margin: 0 auto 8px auto;
+
+  border-radius: 10px;
+
+  box-sizing: border-box;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Efecto suave al pasar el mouse */
+.preview-ci img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(31, 78, 121, 0.15);
+}
+
+/* ----------------------------------------------------------
+   INFORMACIÓN DE LA FOTO
+   ---------------------------------------------------------- */
+
+.preview-ci-contenedor p {
+  width: 100%;
+  max-width: 100%;
+  margin: 5px 0;
+  padding: 0 5px;
+  box-sizing: border-box;
+
+  font-size: 14px;
+  line-height: 1.4;
+  color: #546e7a;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ----------------------------------------------------------
+   CELULARES
+   ---------------------------------------------------------- */
+
+@media (max-width: 600px) {
+
+  .fotos-ci-box {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px;
+    box-sizing: border-box;
+  }
+
+  .fotos-ci-box h4 {
+    font-size: 16px;
+  }
+
+  .fotos-ci-ayuda {
+    font-size: 13px;
+  }
+
+  .foto-campo {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .foto-campo input[type="file"] {
+    font-size: 13px;
+    padding: 9px;
+  }
+
+  .preview-ci {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .preview-ci-contenedor {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+  }
+
+  .preview-ci img {
+    width: auto;
+    max-width: 100%;
+    max-height: 280px;
+    height: auto;
+  }
+
+  .preview-ci-contenedor p {
+    font-size: 13px;
+  }
+}
+
