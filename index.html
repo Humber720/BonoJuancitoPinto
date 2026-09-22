@@ -76,24 +76,41 @@
         <input type="text" id="cedulaTutor" name="cedulaTutor" required placeholder="Ej: 12345678">
 
         <!-- Modalidad de cobro -->
-        <label for="modalidadCobro"><strong>Modalidad de cobro:</strong></label>
+        <label for="modalidadCobro">
+          <strong>Modalidad de cobro:</strong>
+        </label>
         <select name="modalidadCobro" id="modalidadCobro" required>
           <option value="">-- Seleccione la modalidad --</option>
           <option value="COBRO EN CAJAS">COBRO EN CAJAS</option>
           <option value="ABONO EN CUENTA">ABONO EN CUENTA</option>
           <option value="BILLETERA MÓVIL YASTA">BILLETERA MÓVIL "YASTA"</option>
         </select>
-        <!-- Nro. de cuenta: aparece solamente si selecciona ABONO EN CUENTA -->
+        <!-- N.º de cuenta: aparece solamente con ABONO EN CUENTA -->
         <div id="cuentaContainer" style="display:none; margin-top:10px;">
           <label for="numeroCuenta">
             N.º de cuenta del Banco Unión:
           </label>
-          <input 
-            type="text" 
-            id="numeroCuenta" 
-            name="numeroCuenta" 
-            placeholder="Ej: 1234567890"
+          <input
+            type="text"
+            id="numeroCuenta"
+            name="numeroCuenta"
+            placeholder="Ej: 10000045234587"
             inputmode="numeric"
+          >
+        </div>
+        <!-- N.º de celular: aparece solamente con BILLETERA MÓVIL YASTA -->
+        <div id="celularContainer" style="display:none; margin-top:10px;">
+
+          <label for="numeroCelular">
+            N.º de celular:
+          </label>
+          <input
+            type="text"
+            id="numeroCelular"
+            name="numeroCelular"
+            placeholder="Ej: 71234567"
+            inputmode="numeric"
+            maxlength="8"
           >
         </div>
 
