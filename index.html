@@ -14,9 +14,7 @@
   <header class="encabezado">
 
     <h1>Formulario de Registro y Actualización</h1>
-
     <h2>Bono Juancito Pinto</h2>
-
     <h3>Curso: Tercero de Secundaria</h3>
 
     <p class="asesores">
@@ -25,25 +23,20 @@
 
   </header>
 
-
   <main>
-
     <form id="formRegistro">
 
       <!-- =====================================================
            SELECCIÓN DEL ESTUDIANTE
       ====================================================== -->
-
       <label for="estudiante">
         <strong>Seleccione el estudiante:</strong>
       </label>
-
       <select
         name="estudiante"
         id="estudiante"
         required
       >
-
         <option value="">
           -- Seleccione un estudiante --
         </option>
@@ -138,22 +131,19 @@
         </select>
 
 
-        <!-- Cédula -->
+        <!-- Nro Celular -->
 
-        <label for="cedulaTutor">
-
-          Número de celular del padre, madre o tutor para recibir el comprobante:
-
-        </label>
+        <label for="cedulaTutor">Número de celular del padre, madre o tutor para recibir el comprobante:</label>
 
         <input
           type="text"
           id="cedulaTutor"
           name="cedulaTutor"
           required
-          placeholder="Ej: 12345678"
+          placeholder="Ej: 71234567"
+          inputmode="numeric"
+          maxlength="8"
         >
-
 
         <!-- =====================================================
              MODALIDAD DE COBRO
@@ -176,15 +166,12 @@
           <option value="">
             -- Seleccione la modalidad --
           </option>
-
           <option value="COBRO EN CAJAS">
             COBRO EN CAJAS
           </option>
-
           <option value="ABONO EN CUENTA">
             ABONO EN CUENTA
           </option>
-
           <option value="BILLETERA MÓVIL YASTA">
             BILLETERA MÓVIL "YASTA"
           </option>
