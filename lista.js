@@ -112,89 +112,55 @@ document.addEventListener("DOMContentLoaded", function () {
   const URL_APPS_SCRIPT =
     "https://script.google.com/macros/s/AKfycbx2oGydI1J6jGXKeIXLrQjd7dNEGyFk00rIaDC9doNL29hRwho4DVqwCa_T-rbBcaJKqA/exec";
 
-
   // ============================================================
   // ÚLTIMOS DATOS GUARDADOS PARA PDF
   // ============================================================
-
   let lastData = null;
-
-
   // ============================================================
   // MOSTRAR / OCULTAR CAMPOS SEGÚN MODALIDAD
   // ============================================================
-
   modalidadCobro.addEventListener("change", function () {
-
     const modalidad = modalidadCobro.value;
-
 
     // ----------------------------------------------------------
     // ABONO EN CUENTA
     // ----------------------------------------------------------
-
     if (modalidad === "ABONO EN CUENTA") {
-
       cuentaContainer.style.display = "block";
-
       numeroCuenta.required = true;
-
       numeroCuenta.focus();
-
     } else {
-
       cuentaContainer.style.display = "none";
-
       numeroCuenta.required = false;
-
       numeroCuenta.value = "";
-
     }
 
 
     // ----------------------------------------------------------
     // BILLETERA MÓVIL YASTA
     // ----------------------------------------------------------
-
     if (modalidad === "BILLETERA MÓVIL YASTA") {
-
       celularContainer.style.display = "block";
-
       numeroCelular.required = true;
-
       numeroCelular.focus();
-
     } else {
-
       celularContainer.style.display = "none";
-
       numeroCelular.required = false;
-
       numeroCelular.value = "";
-
     }
-
   });
 
 
   // ============================================================
   // LIMPIAR FOTOGRAFÍAS
   // ============================================================
-
   function limpiarFotosCedula() {
-
     fotoCI1Data = "";
-
     fotoCI2Data = "";
-
     fotoCI1Input.value = "";
-
     fotoCI2Input.value = "";
-
     previewCI1.innerHTML = "";
-
     previewCI2.innerHTML = "";
-
     fotoCI1Input.required = false;
 
   }
@@ -203,80 +169,54 @@ document.addEventListener("DOMContentLoaded", function () {
   // ============================================================
   // MOSTRAR / OCULTAR CÉDULA Y FOTOGRAFÍAS
   // ============================================================
-
   entregaCedula.addEventListener("change", function () {
-
     const valor = entregaCedula.value;
-
 
     // ----------------------------------------------------------
     // SI NO ENTREGA FOTOCOPIA
     // ----------------------------------------------------------
-
     if (valor === "No") {
-
       // Mostrar motivo
       motivoContainer.style.display = "block";
-
       motivoInput.required = true;
-
-
       // Mostrar fotografías
       fotosCedulaContainer.style.display = "block";
-
       fotoCI1Input.required = true;
-
-
     } else {
 
       // Ocultar motivo
       motivoContainer.style.display = "none";
-
       motivoInput.required = false;
-
       motivoInput.value = "";
-
 
       // Ocultar fotografías
       fotosCedulaContainer.style.display = "none";
-
       limpiarFotosCedula();
-
     }
-
   });
 
 
   // ============================================================
   // COMPRIMIR IMAGEN
   // ============================================================
-
   function comprimirImagen(archivo) {
-
     return new Promise(function (resolve, reject) {
-
       if (!archivo) {
-
         reject(
           new Error("No se seleccionó ninguna imagen.")
         );
-
         return;
       }
-
 
       // --------------------------------------------------------
       // VERIFICAR QUE SEA UNA IMAGEN
       // --------------------------------------------------------
-
       if (!archivo.type.startsWith("image/")) {
-
         reject(
           new Error(
             "El archivo seleccionado no es una imagen."
           )
         );
-
         return;
       }
 
@@ -284,33 +224,22 @@ document.addEventListener("DOMContentLoaded", function () {
       // --------------------------------------------------------
       // TAMAÑO MÁXIMO ORIGINAL
       // --------------------------------------------------------
-
       if (archivo.size > 10 * 1024 * 1024) {
-
         reject(
           new Error(
             "La imagen es demasiado grande. Seleccione una fotografía menor a 10 MB."
           )
         );
-
         return;
       }
 
 
       const lector = new FileReader();
-
-
       lector.onload = function (evento) {
-
         const imagen = new Image();
-
-
         imagen.onload = function () {
-
           let ancho = imagen.width;
-
           let alto = imagen.height;
-
 
           // ----------------------------------------------------
           // REDUCIR A MÁXIMO 1400 PX
@@ -1043,7 +972,7 @@ document.addEventListener("DOMContentLoaded", function () {
       doc.setFontSize(12);
 
       doc.text(
-        "Unidad Educativa Jupapina - Segundo de Secundaria",
+        "Unidad Educativa Jupapina -Tercero de Secundaria",
         105,
         29,
         {
